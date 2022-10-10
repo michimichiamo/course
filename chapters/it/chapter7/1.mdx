@@ -1,0 +1,33 @@
+<FrameworkSwitchCourse {fw} />
+
+# Introduzione
+
+Nel [Capitolo 3](/course/chapter3), abbiamo visto come affinare un modello per la classificazione testuale. In questo capitolo, affronteremo alcuni compiti ricorrenti nel Natural Language Processing (NLP, *elaborazione del linguaggio naturale*):
+
+- Classificazione dei token
+- Masked language modeling (come BERT)
+- Sintetizzazione
+- Traduzione
+- Pre-addestramento di modelli causali del linguaggio (come GPT-2)
+- Question answering
+
+{#if fw === 'pt'}
+
+Per farlo, dovremo avvalerci di tutto quello che abbiamo imparato riguardo all'API `Trainer` e alla libreria 🤗 Accelerate nel [Capitolo 3](/course/chapter3), alla libreria 🤗 Datasets nel [Capitolo 5](/course/chapter5), e alla libreria 🤗 Tokenizers nel [Capitolo 6](/course/chapter6). Caricheremo inoltre i nostri risultati sul Model Hub, come abbiamo fatto nel [Capitolo 4](/course/chapter4), quindi in questo capitolo vedremo riuniti gli argomenti di tutti i capitoli!
+
+Ogni sezione può essere consultata singolarmente e presenta come addestrare un modello con l'API `Trainer` API oppure con un ciclo di addestramento personalizzato, facendo uso della libreria 🤗 Accelerate. Ogni parte può essere saltata, in modo da concentrarsi su quelle di maggiore interesse: l'API `Trainer` è molto utile per affinare o addestrare un modello senza preoccuparsi di quello che succede *dietro le quinte*, mentre impostare un ciclo di addestramento con `Accelerate` ne semplifica la personalizzazione.
+
+{:else}
+
+Per farlo, dovremo avvalerci di tutto quello che abbiamo imparato riguardo all'addestramento di modelli con l'API di Keras nel [Capitolo 3](/course/chapter3), alla libreria 🤗 Datasets nel [Capitolo 5](/course/chapter5), e alla libreria 🤗 Tokenizers nel [Capitolo 6](/course/chapter6). Caricheremo inoltre i nostri risultati sul Model Hub, come abbiamo fatto nel [Capitolo 4](/course/chapter4), quindi in questo capitolo vedremo riuniti gli argomenti di tutti i capitoli!
+
+Ogni sezione può essere consultata singolarmente.
+
+{/if}
+
+
+<Tip>
+
+Leggendo il capitolo in modo sequenziale, si può notare come una parte significativa di codice e di testo sia condivisa tra le sezioni: la ripetizione è intenzionale, ed è volta a permettere l'approfondimento (o il ripasso) di ogni compito separatamente, fornendo un esempio autonomo, completo e funzionante.
+
+</Tip>
