@@ -46,7 +46,7 @@ Il modello che addestreremo e caricheremo sull'Hub può essere trovato [qui](htt
 
 ## Preparazione dei dati
 
-Prima di tutto, abbiamo bisogno di un dataset adatto alla classificazione dei token. In questa sezione utilizzeremo il dataset [CoNLL-2003](https://huggingface.co/datasets/conll2003), che contiene notizie da Reuters. 
+Prima di tutto, abbiamo bisogno di un dataset adatto alla classificazione dei token. In questa sezione utilizzeremo il dataset [CoNLL-2003](https://huggingface.co/datasets/conll2003), che contiene notizie provenienti da Reuters. 
 
 <Tip>
 
@@ -131,15 +131,15 @@ label_names
 ['O', 'B-PER', 'I-PER', 'B-ORG', 'I-ORG', 'B-LOC', 'I-LOC', 'B-MISC', 'I-MISC']
 ```
 
-We already saw these labels when digging into the `token-classification` pipeline in [Chapter 6](/course/chapter6/3), but for a quick refresher: 
+Abbiamo già incontrato queste etichette esplorando la pipeline `token-classification` nel [Capitolo 6](/course/chapter6/3), ma facciamo un breve ripasso: 
 
-- `O` means the word doesn't correspond to any entity.
-- `B-PER`/`I-PER` means the word corresponds to the beginning of/is inside a *person* entity.
-- `B-ORG`/`I-ORG` means the word corresponds to the beginning of/is inside an *organization* entity.
-- `B-LOC`/`I-LOC` means the word corresponds to the beginning of/is inside a *location* entity.
-- `B-MISC`/`I-MISC` means the word corresponds to the beginning of/is inside a *miscellaneous* entity.
+- `O` significa che la parola non corrisponde ad alcuna entità.
+- `B-PER`/`I-PER` significa che la parola si trova all'inizio/all'interno di un'entità di tipo *persona*.
+- `B-ORG`/`I-ORG` significa che la parola si trova all'inizio/all'interno di un'entità di tipo *organizzazione*.
+- `B-LOC`/`I-LOC` significa che la parola si trova all'inizio/all'interno di un'entità di tipo *luogo*.
+- `B-MISC`/`I-MISC` significa che la parola si trova all'inizio/all'interno di un'entità di tipo *misto*.
 
-Now decoding the labels we saw earlier gives us this:
+Ora decodifichiamo le etichette dell'esempio:
 
 ```python
 words = raw_datasets["train"][0]["tokens"]
@@ -161,28 +161,28 @@ print(line2)
 'B-ORG O       B-MISC O    O  O       B-MISC  O    O'
 ```
 
-And for an example mixing `B-` and `I-` labels, here's what the same code gives us on the element of the training set at index 4:
+Utilizzando lo stesso codice sull'elemento all'indice 4 dell'insieme di training, possiamo vedere un esempio che combina l'utilizzo di etichette `B-` e `I-`:
 
 ```python out
 'Germany \'s representative to the European Union \'s veterinary committee Werner Zwingmann said on Wednesday consumers should buy sheepmeat from countries other than Britain until the scientific advice was clearer .'
 'B-LOC   O  O              O  O   B-ORG    I-ORG O  O          O         B-PER  I-PER     O    O  O         O         O      O   O         O    O         O     O    B-LOC   O     O   O          O      O   O       O'
 ```
 
-As we can see, entities spanning two words, like "European Union" and "Werner Zwingmann," are attributed a `B-` label for the first word and an `I-` label for the second.
+Da questo esempio apprezziamo come, all'interno delle entità formate da due parole come "European Union" e "Werner Zwingmann", l'etichetta `B-` venga utilizzata per la prima parola e l'etichetta `I-` per la seconda.
 
 <Tip>
 
-✏️ **Your turn!** Print the same two sentences with their POS or chunking labels.
+✏️ **Tocca a te!** Fai il print delle etichette *POS* o di *chunking* delle stesse due frasi.
 
 </Tip>
 
-### Processing the data
+### Elaborare i dati
 
 <Youtube id="iY2AZYdZAr0"/>
 
-As usual, our texts need to be converted to token IDs before the model can make sense of them. As we saw in [Chapter 6](/course/chapter6/), a big difference in the case of token classification tasks is that we have pre-tokenized inputs. Fortunately, the tokenizer API can deal with that pretty easily; we just need to warn the `tokenizer` with a special flag.
+Come sempre, dobbiamo convertire i testi in token IDs per renderli comprensibili al modello. Come abbiamo visto nel [Capitolo 6](/course/chapter6/), i compiti di token classification hanno la peculiarità di utilizzare input pre-tokenizzati. Fortunatamente, l'API `tokenizer` gestisce questa situazione in modo piuttosto semplice, tramite l'utilizzo di una flag speciale.
 
-To begin, let's create our `tokenizer` object. As we said before, we will be using a BERT pretrained model, so we'll start by downloading and caching the associated tokenizer:
+Per iniziare, creiamo il nostro oggetto `tokenizer`. Come già accennato, utilizzeremo un modello BERT pre-addestrato, quindi il primo passo è scaricare e caricare nella cache il tokenizer corrispondente:
 
 ```python
 from transformers import AutoTokenizer
@@ -191,7 +191,7 @@ model_checkpoint = "bert-base-cased"
 tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 ```
 
-You can replace the `model_checkpoint` with any other model you prefer from the [Hub](https://huggingface.co/models), or with a local folder in which you've saved a pretrained model and a tokenizer. The only constraint is that the tokenizer needs to be backed by the 🤗 Tokenizers library, so there's a "fast" version available. You can see all the architectures that come with a fast version in [this big table](https://huggingface.co/transformers/#supported-frameworks), and to check that the `tokenizer` object you're using is indeed backed by 🤗 Tokenizers you can look at its `is_fast` attribute:
+Il `model_checkpoint` può essere rimpiazzato con qualsiasi modello disponibile sull' [Hub](https://huggingface.co/models) o con una cartella locale contenente un modello pre-addestrato e un tokenizer. L'unico vincolo è che il tokenizer sia supportato dalla libreria 🤗 Tokenizers, in modo che ci sia una versione veloce ("fast") disponibile. [Questa grande tabella](https://huggingface.co/transformers/#supported-frameworks) raccoglie tutte le architetture che hanno una versione veloce disponibile, mentre per controllare che un'oggetto di tipo `tokenizer` sia supportato da 🤗 Tokenizers è sufficiente controllare il suo attributo `is_fast`:
 
 ```py
 tokenizer.is_fast
@@ -201,7 +201,7 @@ tokenizer.is_fast
 True
 ```
 
-To tokenize a pre-tokenized input, we can use our `tokenizer` as usual and just add `is_split_into_words=True`:
+Per tokenizzare un input pre-tokenizzato, possiamo utilizzare il `tokenizer` come al solito, semplicemente aggiungendo `is_split_into_words=True`:
 
 ```py
 inputs = tokenizer(raw_datasets["train"][0]["tokens"], is_split_into_words=True)
@@ -212,9 +212,9 @@ inputs.tokens()
 ['[CLS]', 'EU', 'rejects', 'German', 'call', 'to', 'boycott', 'British', 'la', '##mb', '.', '[SEP]']
 ```
 
-As we can see, the tokenizer added the special tokens used by the model (`[CLS]` at the beginning and `[SEP]` at the end) and left most of the words untouched. The word `lamb`, however, was tokenized into two subwords, `la` and `##mb`. This introduces a mismatch between our inputs and the labels: the list of labels has only 9 elements, whereas our input now has 12 tokens. Accounting for the special tokens is easy (we know they are at the beginning and the end), but we also need to make sure we align all the labels with the proper words.
+Come possiamo vedere, la maggior parte delle parole non è stata modificata, mentre i token speciali utilizzati dal modello sono stati inseriti all'inizio (`[CLS]`) e alla fine (`[SEP]`). La parola `lamb`, invece, è stata tokenizzata in due *subtoken*, `la` e `##mb`. Tutto ciò introduce un disallineamento tra input ed etichette: la lista di etichette ha soltanto 9 elementi, mentre i token di input sono diventati 12. I token speciali non sono difficili da gestire (sappiamo che si trovano all'inizio e alla fine), ma dobbiamo assicurarci di allineare tutte le etichette con le parole corrispondenti.
 
-Fortunately, because we're using a fast tokenizer we have access to the 🤗 Tokenizers superpowers, which means we can easily map each token to its corresponding word (as seen in [Chapter 6](/course/chapter6/3)):
+Fortunatamente, l'utilizzo di un tokenizer veloce ci dà accesso ai superpoteri di 🤗 Tokenizers, ovvero mappare semplicemente ogni token con la parola corrispondente (come abbiamo visto nel [Capitolo 6](/course/chapter6/3)):
 
 ```py
 inputs.word_ids()
@@ -224,7 +224,7 @@ inputs.word_ids()
 [None, 0, 1, 2, 3, 4, 5, 6, 7, 7, 8, None]
 ```
 
-With a tiny bit of work, we can then expand our label list to match the tokens. The first rule we'll apply is that special tokens get a label of `-100`. This is because by default `-100` is an index that is ignored in the loss function we will use (cross entropy). Then, each token gets the same label as the token that started the word it's inside, since they are part of the same entity. For tokens inside a word but not at the beginning, we replace the `B-` with `I-` (since the token does not begin the entity):
+Con un piccolo sforzo, possiamo ora espandere la lista per allinearla ai token. La prima regola che applicheremo è assegnare il valore `-100` ai token speciali, dato che questo indice viene ignorato di default `-100` nella loss function che useremo (cross entropy). I token vengono poi raggruppati, assegnando a ciascuno l'etichetta del primo token della parola di cui fa parte, rimpiazzando la `B-` con la `I-` (dato che il token si trova all'interno dell'entità, e non all'inizio):
 
 ```python
 def align_labels_with_tokens(labels, word_ids):
@@ -250,7 +250,7 @@ def align_labels_with_tokens(labels, word_ids):
     return new_labels
 ```
 
-Let's try it out on our first sentence:
+Proviamo sulla prima frase:
 
 ```py
 labels = raw_datasets["train"][0]["ner_tags"]
@@ -264,15 +264,15 @@ print(align_labels_with_tokens(labels, word_ids))
 [-100, 3, 0, 7, 0, 0, 0, 7, 0, 0, 0, -100]
 ```
 
-As we can see, our function added the `-100` for the two special tokens at the beginning and the end, and a new `0` for our word that was split into two tokens.
+Come possiamo vedere, la nostra funzione ha aggiunto il `-100` per i due token speciali di inizio e fine, e un nuovo `0` per la parola divisa in due token.
 
 <Tip>
 
-✏️ **Your turn!** Some researchers prefer to attribute only one label per word, and assign `-100` to the other subtokens in a given word. This is to avoid long words that split into lots of subtokens contributing heavily to the loss. Change the previous function to align labels with input IDs by following this rule.
+✏️ **Tocca a te!** Alcuni ricercatori preferiscono attribuire una sola etichetta per ciascuna parola, e assegnare `-100` agli altri *subtoken*, per evitare che parole molto lunghe - che vengono divise in molti *subtoken* - influenzino troppo la loss function. Prova a cambiare la funzione in modo da allineare etichette e input IDs secondo questa regola.
 
 </Tip>
 
-To preprocess our whole dataset, we need to tokenize all the inputs and apply `align_labels_with_tokens()` on all the labels. To take advantage of the speed of our fast tokenizer, it's best to tokenize lots of texts at the same time, so we'll write a function that processes a list of examples and use the `Dataset.map()` method with the option `batched=True`. The only thing that is different from our previous example is that the `word_ids()` function needs to get the index of the example we want the word IDs of when the inputs to the tokenizer are lists of texts (or in our case, list of lists of words), so we add that too:
+Per pre-elaborare il nostro intero set di dati, dobbiamo tokenizzare tutti gli input e applicare `align_labels_with_tokens()` a tutte le etichette. Per sfruttare al meglio la velocità del tokenizer, la cosa migliore è fornire molti testi contemporaneamente, per cui scriveremo una funzione che elabori una lista di esempi e useremo il metodo `Dataset.map()` con l'opzione `batched=True`. L'unica differenza rispetto all'esempio precedente è che quando abbiamo a che fare con liste di testi (nel nostro caso, lista di liste di parole) dobbiamo passare alla funzione `word_ids()` l'indice di ogni elemento di cui vogliamo l'ID di parola:
 
 ```py
 def tokenize_and_align_labels(examples):
@@ -289,9 +289,9 @@ def tokenize_and_align_labels(examples):
     return tokenized_inputs
 ```
 
-Note that we haven't padded our inputs yet; we'll do that later, when creating the batches with a data collator. 
+Sottolineiamo che non abbiamo ancora applicato il padding ai nostri input; lo faremo più tardi, quando creeremo le batch con un data collator.
 
-We can now apply all that preprocessing in one go on the other splits of our dataset:
+Possiamo applicare ora tutta la pre-elaborazione agli altri split in un colpo solo:
 
 ```py
 tokenized_datasets = raw_datasets.map(
@@ -301,7 +301,7 @@ tokenized_datasets = raw_datasets.map(
 )
 ```
 
-We've done the hardest part! Now that the data has been preprocessed, the actual training will look a lot like what we did in [Chapter 3](/course/chapter3).
+Abbiamo finito la parte più difficile! Con i dati pre-elaborati, il vero e proprio addestramento somiglierà molto a quanto abbiamo fatto nel [Capitolo 3](/course/chapter3).
 
 {#if fw === 'pt'}
 
