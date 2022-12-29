@@ -2,10 +2,10 @@
 
 # Introduzione
 
-Nel [Capitolo 3](/course/chapter3), abbiamo visto come affinare un modello per la classificazione testuale. In questo capitolo, affronteremo alcuni compiti ricorrenti nel Natural Language Processing (NLP, *elaborazione del linguaggio naturale*):
+Nel [Capitolo 3](/course/chapter3), abbiamo visto come affinare un modello per la classificazione testuale. In questo capitolo, affronteremo alcune operazioni molto comuni nell'ambito dell'elaborazione del linguaggio naturale (abbreviato NLP, dall'inglese *Natural Language Processing*):
 
 - Classificazione dei token
-- Masked language modeling (come BERT)
+- Masked language modeling (es. BERT)
 - Sintetizzazione
 - Traduzione
 - Pre-addestramento di modelli causali del linguaggio (come GPT-2)
@@ -15,7 +15,7 @@ Nel [Capitolo 3](/course/chapter3), abbiamo visto come affinare un modello per l
 
 Per farlo, dovremo avvalerci di tutto quello che abbiamo imparato riguardo all'API `Trainer` e alla libreria 🤗 Accelerate nel [Capitolo 3](/course/chapter3), alla libreria 🤗 Datasets nel [Capitolo 5](/course/chapter5), e alla libreria 🤗 Tokenizers nel [Capitolo 6](/course/chapter6). Caricheremo inoltre i nostri risultati sul Model Hub, come abbiamo fatto nel [Capitolo 4](/course/chapter4), quindi in questo capitolo vedremo riuniti gli argomenti di tutti i capitoli!
 
-Ogni sezione può essere consultata singolarmente e presenta come addestrare un modello con l'API `Trainer` API oppure con un ciclo di addestramento personalizzato, facendo uso della libreria 🤗 Accelerate. Ogni parte può essere saltata, in modo da concentrarsi su quelle di maggiore interesse: l'API `Trainer` è molto utile per affinare o addestrare un modello senza preoccuparsi di quello che succede *dietro le quinte*, mentre impostare un ciclo di addestramento con `Accelerate` ne semplifica la personalizzazione.
+Ogni sezione può essere consultata singolarmente e presenta come addestrare un modello con l'API `Trainer` API oppure con un ciclo di addestramento personalizzato, facendo uso della libreria 🤗 Accelerate. Ogni parte può essere saltata, in modo da concentrarsi su quelle di maggiore interesse: l'API `Trainer` è molto utile per affinare o addestrare un modello senza preoccuparsi di quello che succede dietro le quinte, mentre impostare un ciclo di addestramento con `Accelerate` ne semplifica la personalizzazione.
 
 {:else}
 
